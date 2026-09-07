@@ -794,7 +794,52 @@
             }
         }
 
-        .lightbox-nav-bottom { display: flex; justify-content: center; gap: 20px; width: 100%; }
+        .lightbox-nav-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .lightbox-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-white);
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            text-decoration: none;
+        }
+
+        .lightbox-action-btn:hover {
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.1);
+        }
+
+        .lightbox-action-btn svg { width: 20px; height: 20px; }
+
+        #photo-name-display {
+            flex: 0 1 200px;
+            min-width: 0 !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .lightbox { padding: 24px 12px; }
+            .lightbox-nav-bottom { gap: 8px; }
+            .lightbox-action-btn, .nav-btn { width: 40px; height: 40px; }
+            #photo-name-display { flex-basis: 120px; font-size: .95rem !important; }
+        }
 
         .nav-btn {
             background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
@@ -1189,7 +1234,7 @@
     <div class="bg-gradient-overlay" aria-hidden="true"></div>
     <section id="password-lock" aria-label="Kunci password">
         <div class="password-panel">
-            <div class="password-logo" aria-hidden="true"><img src="SASKIA.jpg" alt="Sankia Album" onerror="this.style.display='none'; this.parentElement.textContent='D';"></div>
+            <div class="password-logo" aria-hidden="true"><img src="Sankia.jpg" alt="Sankia Album" onerror="this.style.display='none'; this.parentElement.textContent='D';"></div>
             <h1 class="password-heading">Sankia Album</h1>
             <div class="password-dots" id="password-dots" aria-label="Status password"><span class="password-dot"></span><span class="password-dot"></span><span class="password-dot"></span><span class="password-dot"></span><span class="password-dot"></span><span class="password-dot"></span></div>
             <div class="password-keypad" role="group" aria-label="Keypad angka">
@@ -1224,7 +1269,7 @@
             <nav class="navbar">
                 <div class="logo">
                     <div class="profile-img">
-                        <img src="SASKIA.jpg" alt="Sankia Album">
+                        <img src="Sankia.jpg" alt="Sankia Album">
                     </div>
                     <h1>Sankia <span>Album</span></h1>
                 </div>
@@ -2381,11 +2426,17 @@ document.addEventListener('DOMContentLoaded',()=>{
                 <img class="photo" id="lightbox-img" src="" alt="Sankia Album" loading="lazy" />
             </div>
             <div class="lightbox-nav-bottom">
-                <button id="prev-btn" class="nav-btn">
+                <button id="prev-btn" class="nav-btn" type="button" aria-label="Foto sebelumnya">
                     <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 </button>
-                <div id="photo-name-display" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; font-weight: 600; min-width: 200px; text-align: center;">Album 1</div>
-                <button id="next-btn" class="nav-btn">
+                <button id="photo-lightbox-share" class="lightbox-action-btn" type="button" title="Share foto" aria-label="Share foto">
+                    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                </button>
+                <div id="photo-name-display" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; font-weight: 600; text-align: center;">Album 1</div>
+                <a id="photo-lightbox-download" class="lightbox-action-btn" href="#" download title="Download foto" aria-label="Download foto">
+                    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </a>
+                <button id="next-btn" class="nav-btn" type="button" aria-label="Foto berikutnya">
                     <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                 </button>
             </div>
@@ -3196,6 +3247,8 @@ document.addEventListener('DOMContentLoaded',()=>{
             const closeLightbox = document.querySelector('#lightbox .close-lightbox');
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
+            const photoLightboxShare = document.getElementById('photo-lightbox-share');
+            const photoLightboxDownload = document.getElementById('photo-lightbox-download');
 
             const videoLightbox = document.getElementById('video-lightbox');
             const closeVideoLightbox = document.getElementById('close-video-lightbox');
@@ -3335,6 +3388,11 @@ document.addEventListener('DOMContentLoaded',()=>{
                 
                 lightboxImg.src = filteredData[index].image;
                 activePhotoLightboxItem = filteredData[index];
+                const isHiddenLightbox = menuHidden.classList.contains('active');
+                photoLightboxDownload.href = activePhotoLightboxItem.image;
+                photoLightboxDownload.download = (activePhotoLightboxItem.title || `Album-${activePhotoLightboxItem.id || index + 1}`)
+                    .replace(/[^a-z0-9-_]+/gi, '-') + '.jpg';
+                photoLightboxShare.setAttribute('aria-label', `Share ${activePhotoLightboxItem.title || 'foto'}`);
                 if (favoriteType) {
                     activePhotoFavoriteType = favoriteType;
                 } else if (menuHidden.classList.contains('active')) {
@@ -3350,7 +3408,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 
                 // Sembunyikan nama jika di Hidden Album
                 const photoNameDisplay = document.getElementById('photo-name-display');
-                if (menuHidden.classList.contains('active')) {
+                if (isHiddenLightbox) {
                     photoNameDisplay.style.display = 'none';
                 } else {
                     photoNameDisplay.style.display = 'block';
@@ -3376,6 +3434,22 @@ document.addEventListener('DOMContentLoaded',()=>{
                     }
                 });
             }
+
+            photoLightboxShare.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (!activePhotoLightboxItem) return;
+                const title = activePhotoLightboxItem.title || 'Foto dari Sankia Album';
+                const shareData = { title, text: `Lihat ${title}`, url: window.location.href };
+                try {
+                    if (navigator.share) await navigator.share(shareData);
+                    else {
+                        await navigator.clipboard.writeText(window.location.href);
+                        alert('Link website berhasil disalin!');
+                    }
+                } catch (error) {
+                    if (error.name !== 'AbortError') console.error('Gagal membagikan foto:', error);
+                }
+            });
 
             closeLightbox.addEventListener('click', () => { closeLightboxFunc(); });
             
